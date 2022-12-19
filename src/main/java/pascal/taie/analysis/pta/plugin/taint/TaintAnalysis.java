@@ -22,8 +22,10 @@
 
 package pascal.taie.analysis.pta.plugin.taint;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import pascal.taie.analysis.graph.callgraph.CallGraph;
 import pascal.taie.analysis.graph.callgraph.Edge;
 import pascal.taie.analysis.pta.PointerAnalysisResult;
 import pascal.taie.analysis.pta.core.cs.context.Context;
@@ -46,8 +48,12 @@ import pascal.taie.util.collection.Maps;
 import pascal.taie.util.collection.MultiMap;
 import pascal.taie.util.collection.Pair;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
+
+import static java.lang.System.out;
 
 public class TaintAnalysis implements Plugin {
 
@@ -186,6 +192,57 @@ public class TaintAnalysis implements Plugin {
                                 .forEach(taintFlows::add);
                     });
         });
+
+
+        CallGraph<Invoke, JMethod> callGraph = result.getCallGraph();
+        for (JMethod method : callGraph) {
+            if (method.isNative())
+            {
+                out.printf("*****************************************************************\n");
+                out.printf("*****************************************************************\n");
+                callGraph.getCallersOf(method).forEach(nativeCaller -> {
+                    out.printf("Native method : %s\n", method.getName());
+                    out.printf("RetType : %s\n", method.getReturnType().toString());
+
+                    nativeMethodTaintSummary nmts = new nativeMethodTaintSummary();
+                    JsonToFile jf = new JsonToFile();
+                    List<String> argsType = new ArrayList<>();
+                    List<Integer> taintedArgsPos = new ArrayList<>();
+
+                    for (int argPos = 0; argPos < nativeCaller.getInvokeExp().getArgCount(); ++argPos)
+                    {
+                        Var arg = nativeCaller.getInvokeExp().getArg(argPos);
+                        out.printf("%dth argType : %s\n", argPos, arg.getType().toString());
+                        argsType.add(arg.getType().toString());
+                        for (Obj obj : result.getPointsToSet(arg))
+                        {
+                            if (manager.isTaint(obj))
+                            {
+                                out.printf("TaintedArg : %d\n", argPos);
+                                taintedArgsPos.add(argPos);
+                                break;
+                            }
+                        }
+                    }
+
+                    nmts.nativeMethodName = method.getName();
+                    nmts.retType = method.getReturnType().toString();
+                    nmts.argsType = argsType;
+                    nmts.taintedArgsPos = taintedArgsPos;
+
+                    try {
+                        jf.jsonFormString(nmts);
+                    } catch (JsonProcessingException e) {
+                        throw new RuntimeException(e);
+                    }
+
+                });
+
+                out.printf("*****************************************************************\n");
+                out.printf("*****************************************************************\n");
+            }
+        }
+
         return taintFlows;
     }
 }
