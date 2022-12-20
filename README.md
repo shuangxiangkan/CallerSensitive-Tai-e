@@ -122,3 +122,9 @@ The final taint analysis result of Tai-e is:
 Detected 1 taint flow(s):
 TaintFlow{<Main: void main(java.lang.String[])>[2@L20] $r1 = invokevirtual $r0.<Main: java.lang.String source()>(); -> <Main: void main(java.lang.String[])>[5@L24] invokevirtual $r0.<Main: void sink(java.lang.String)>($r3);/0}
 ```
+
+The files changed in Tai-e are as follows:
+
++ [JsonToFile.java](https://github.com/shuangxiangkan/CallerSensitive-Tai-e/blob/master/src/main/java/pascal/taie/analysis/pta/plugin/taint/JsonToFile.java)
++ [nativeMethodTaintSummary.java](https://github.com/shuangxiangkan/CallerSensitive-Tai-e/blob/master/src/main/java/pascal/taie/analysis/pta/plugin/taint/nativeMethodTaintSummary.java)
++ [TaintAnalysis.java](https://github.com/shuangxiangkan/CallerSensitive-Tai-e/blob/master/src/main/java/pascal/taie/analysis/pta/plugin/taint/TaintAnalysis.java)
