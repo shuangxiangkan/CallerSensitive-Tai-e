@@ -72,7 +72,7 @@ We run the following command in Tai-e:
 
 The content of the configuration file is：
 
-```aidl
+```
 sources:
   - { method: "<Main: java.lang.String source()>", type: "java.lang.String" }
 
@@ -105,7 +105,7 @@ by CallerSensitive-SVF,
 We merge the nativeCalleeSummary.yml file with the previous configuration file to get the complete
 configuration file of Tai-e's taint analysis：
 
-```aidl
+```
 sources:
   - { method: "<Main: java.lang.String source()>", type: "java.lang.String" }
 
@@ -118,7 +118,7 @@ transfers:
 ```
 The final taint analysis result of Tai-e is:
 
-```aidl
+```
 Detected 1 taint flow(s):
 TaintFlow{<Main: void main(java.lang.String[])>[2@L20] $r1 = invokevirtual $r0.<Main: java.lang.String source()>(); -> <Main: void main(java.lang.String[])>[5@L24] invokevirtual $r0.<Main: void sink(java.lang.String)>($r3);/0}
 ```
