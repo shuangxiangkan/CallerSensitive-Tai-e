@@ -163,10 +163,10 @@ public class ResultProcessor implements Plugin {
         } else {  // otherwise, dump to System.out
             out = System.out;
         }
-        dumpPointers(out, result.getCSVars(), "variables");
-        dumpPointers(out, result.getStaticFields(), "static fields");
-        dumpPointers(out, result.getInstanceFields(), "instance fields");
-        dumpPointers(out, result.getArrayIndexes(), "array indexes");
+//        dumpPointers(out, result.getCSVars(), "variables");
+//        dumpPointers(out, result.getStaticFields(), "static fields");
+//        dumpPointers(out, result.getInstanceFields(), "instance fields");
+//        dumpPointers(out, result.getArrayIndexes(), "array indexes");
         if (taintEnabled) {
             dumpTaintFlows(out, result);
         }
